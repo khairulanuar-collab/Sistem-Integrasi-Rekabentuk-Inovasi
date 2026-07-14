@@ -1,0 +1,515 @@
+=== PAGE 1 ===
+ISI KANDUNGAN
+1. Pengenalan & Latar Belakang Projek
+2. Objektif & Skop Sistem JABATAN TENAGA MANUSIA (JTM)
+3. Pengguna Sasaran & PeraKnEaMnE (NUTsEeRr IRAoNl eSsU)MBER MANUSIA MALAYSIA
+4. Seni Bina Teknikal (Technical Architecture)
+5. Reka Bentuk UI/UX — Glassmorphism
+6. Modul 1: Rekabentuk & Pembangunan Video Kemerdekaan Berkonsepkan AI
+PRODUCT REQUIREMENTS DOCUMENT
+7. Modul 2: Dashboard Operasi & Pengurusan Kerja
+8. Modul 3: Modul Pembelajaran — Drone for Beginner
+9. Reka Bentuk Pangkalan Data (Supabase) & Data Dummy
+SIRI-AI: Sistem Integrasi Rekabentuk &amp; Inovasi JTM
+10. Integrasi AI — Z.AI Model GLM-5.2
+11. Keperluan Bukan Fungsian (Non-Functional Requirements)
+Video Kemerdekaan AI (cid:127) Dashboard Operasi (cid:127) Modul e-Pembelajaran Drone
+12. Keselamatan, Privasi & Pematuhan
+13. Pelan Penempatan (Deployment Plan) — Netlify
+14. Pelan Pembangunan & Garis Masa (Roadmap)
+15. Kriteria Penerimaan & Metrik Kejayaan
+16. Risiko & Strategi Mitigasi
+Versi Dokumen: 1.0 | Status: Draf untuk Semakan
+17. Lampiran
+Tarikh: 14 Julai 2026
+Tech Stack: Z.AI (GLM-5.2) · Supabase · Netlify · Glassmorphism UI/UX
+Klasifikasi: Terhad — Untuk Kegunaan Dalaman JTM &amp; Pasukan Pembangunan
+Dokumen ini disediakan sebagai spesifikasi teknikal &amp; fungsian bagi tujuan pembangunan sistem.
+
+=== PAGE 2 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+1. Pengenalan & Latar Belakang Projek
+Jabatan Tenaga Manusia (JTM) di bawah Kementerian Sumber Manusia Malaysia memerlukan satu sistem digital
+bersepadu yang moden untuk menyokong tiga (3) keperluan operasi dan strategik utama: (i) penghasilan
+kandungan kreatif bertemakan Kemerdekaan menggunakan teknologi Kecerdasan Buatan (AI), (ii) satu dashboard
+operasi bersepadu untuk pemantauan perancangan kerja, mesyuarat, tugasan utama dan buletin jabatan, serta (iii)
+satu modul e-pembelajaran (e-learning) permulaan bagi kursus Drone for Beginner untuk tujuan latihan kakitangan
+dan pelatih JTM.
+Sistem ini dinamakan SIRI-AI (Sistem Integrasi Rekabentuk & Inovasi JTM) dan direka bentuk sebagai aplikasi
+web moden (web application) yang responsif, selamat dan mudah diselenggara, dibina di atas seni bina
+serverless/JAMstack menggunakan Supabase sebagai backend-as-a-service dan Netlify sebagai platform
+penempatan (deployment) bagi frontend.
+Dokumen PRD ini bertujuan menjadi rujukan tunggal (single source of truth) bagi pasukan pembangunan, pihak
+pengurusan JTM, dan mana-mana kontraktor/vendor luar yang terlibat dalam pembangunan sistem ini. Ia
+merangkumi keperluan fungsian, keperluan bukan fungsian, seni bina teknikal, reka bentuk pangkalan data, serta
+pelan penempatan sistem.
+1.1 Konteks Perniagaan
+lJTM ingin memodenkan operasi dalaman dengan mengurangkan penggunaan hamparan (spreadsheet) dan e-mel
+bertaburan bagi urusan perancangan kerja dan mesyuarat.
+lSambutan Bulan Kemerdekaan memerlukan penghasilan video promosi/tribute secara pantas dan kos efektif
+menggunakan bantuan AI generatif, tanpa bergantung sepenuhnya kepada vendor produksi video luar.
+lTerdapat keperluan latihan kemahiran baharu (upskilling) dalam kalangan kakitangan dan pelatih berkaitan
+teknologi dron, sejajar dengan agenda Revolusi Perindustrian 4.0 dan pembangunan tenaga kerja masa hadapan.
+lPihak pengurusan memerlukan paparan tunggal (single-pane-of-glass) bagi status kerja, mesyuarat akan datang,
+dan pengumuman rasmi (buletin) jabatan.
+1.2 Definisi & Singkatan
+Istilah Definisi
+JTM Jabatan Tenaga Manusia, Kementerian Sumber Manusia Malaysia
+PRD Product Requirements Document — dokumen keperluan produk
+BaaS Backend-as-a-Service (cth: Supabase)
+GLM-5.2 Model bahasa besar (LLM) daripada Z.AI yang digunakan untuk penjanaan kandungan AI dalam sistem ini
+RLS Row Level Security — kawalan akses data pada peringkat baris dalam Supabase/PostgreSQL
+CRUD Create, Read, Update, Delete — operasi asas terhadap data
+SPA Single Page Application
+JWT JSON Web Token — kaedah pengesahan (authentication) pengguna
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 1
+
+=== PAGE 3 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+2. Objektif & Skop Sistem
+2.1 Objektif Projek
+lMembangunkan satu platform bersepadu bagi menyokong penghasilan video Kemerdekaan berkonsepkan AI
+dalam tempoh yang singkat berbanding kaedah produksi video konvensional.
+lMenyediakan dashboard operasi yang memaparkan status perancangan kerja, jadual mesyuarat, senarai
+kerja-kerja utama (key tasks) dan buletin jabatan secara masa nyata (real-time).
+lMenyediakan modul e-pembelajaran interaktif bagi kursus asas dron (Drone for Beginner) lengkap dengan struktur
+silibus, kuiz dan penjejakan kemajuan (progress tracking).
+lMemastikan sistem menggunakan reka bentuk UI/UX moden bergaya glassmorphism yang konsisten, responsif
+(mobile-first) dan mesra pengguna.
+lMembina seni bina yang kos efektif, terukur (scalable) dan mudah diselenggara menggunakan Supabase
+(backend) dan Netlify (deployment).
+lMenyediakan set data dummy/pengujian yang realistik dalam backend sebenar (Supabase) bagi tujuan
+demonstrasi, ujian penerimaan pengguna (UAT), dan latihan.
+2.2 Skop Dalam (In-Scope)
+lModul 1 — Studio Video Kemerdekaan AI: perancangan skrip, penjanaan storyboard/adegan berbantukan AI
+(GLM-5.2), pengurusan aset media, dan eksport spesifikasi produksi.
+lModul 2 — Dashboard Operasi: Perancangan Kerja (Work Planning/Kanban), Mesyuarat (Meeting Scheduler &
+Minit), Kerja-Kerja Utama (Key Tasks/KPI Tracker), dan Buletin (Bulletin/Announcement Board).
+lModul 3 — e-Pembelajaran Drone for Beginner: struktur kursus, modul video/bacaan, kuiz penilaian, sijil siap
+(certificate of completion), dan papan pendahulu (leaderboard) ringkas.
+lSistem pengesahan pengguna (login/logout), pengurusan peranan (role-based access control), dan profil
+pengguna.
+lPangkalan data Supabase (PostgreSQL) lengkap dengan skema jadual, Row Level Security (RLS), Storage untuk
+fail media, dan data dummy sedia guna.
+lPenempatan (deployment) frontend di Netlify dengan sokongan CI/CD melalui Git.
+2.3 Skop Luar (Out-of-Scope) — Fasa 1
+lRendering video sebenar secara automatik penuh (full auto video rendering) — sistem menumpukan kepada
+perancangan, storyboard dan arahan produksi berbantukan AI; rendering akhir video boleh dilakukan melalui
+integrasi pihak ketiga pada fasa akan datang.
+lAplikasi mudah alih native (iOS/Android) — Fasa 1 menumpukan kepada aplikasi web responsif sahaja.
+lIntegrasi sistem HRMIS/eSPKB sedia ada JTM — akan dipertimbangkan pada fasa kedua selepas kelulusan
+pihak IT governance.
+lModul kewangan/pembayaran.
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 2
+
+=== PAGE 4 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+3. Pengguna Sasaran & Peranan (User Roles)
+Sistem menggunakan model kawalan akses berasaskan peranan (Role-Based Access Control / RBAC) yang
+dikuatkuasakan melalui Supabase Auth dan Row Level Security (RLS) pada peringkat pangkalan data.
+Peranan Penerangan Akses Utama
+Pentadbir Sistem (Admin) Ketua unit ICT / pentadbir aplikasi Akses penuh — konfigurasi sistem, pengurusan pengguna, semua modul
+Pengurus/Ketua Jabatan Pegawai kanan yang memantau operasi Dashboard penuh, kelulusan kerja, penjanaan laporan
+Pegawai/Eksekutif Kakitangan pelaksana harian Perancangan kerja sendiri, input mesyuarat, akses kursus
+Krew Kreatif/Reka Bentuk Pasukan pembangunan video Kemerdekaan Modul 1 penuh (studio video AI), muat naik aset
+Pelatih/Peserta Kursus Kakitangan/pelatih mengikuti kursus dron Modul 3 sahaja — akses kandungan &amp; kuiz
+Pelawat (Read-only) Pihak berkepentingan luar terhad Paparan buletin &amp; pengumuman awam sahaja
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 3
+
+=== PAGE 5 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+4. Seni Bina Teknikal (Technical Architecture)
+4.1 Gambaran Keseluruhan Tumpukan Teknologi (Tech Stack)
+Lapisan Teknologi Catatan
+Frontend Framework React.js (Vite) + TailwindCSS SPA responsif dengan komponen boleh guna semula (reusable components)
+Reka Bentuk UI Glassmorphism Design System (custom) Backdrop-blur, translusensi, bayang lembut, kontras aksesibiliti
+Backend / BaaS Supabase (PostgreSQL + Auth + Storage + RealtimPea n+g Ekadlgaen Fduantac,t ipoennsg)esahan, storan fail &amp; API automatik
+Model AI Z.AI — GLM-5.2 (via API) Penjanaan skrip video, storyboard, kandungan kuiz, ringkasan mesyuarat
+Hosting/Deployment Netlify (Frontend) + Netlify Functions (proksi API jikCaI /pCeDrl ua)utomatik dari repositori Git
+Autentikasi Supabase Auth (Email/Password, Magic Link, SSOJ WpilTih-abna)sed session, RLS di peringkat pangkalan data
+Storan Fail/Media Supabase Storage (bucket berasingan mengikut mSotdourly)board, aset video, bahan kursus, lampiran mesyuarat
+Realtime Supabase Realtime (WebSocket) Kemas kini dashboard secara langsung (papan Kanban, buletin)
+Version Control Git (GitHub/GitLab) Disambungkan terus ke Netlify untuk continuous deployment
+4.2 Rajah Aliran Seni Bina (Architecture Flow)
+Pengguna fi Netlify (Frontend React SPA, dilindungi HTTPS) fi Supabase Client SDK fi Supabase Auth
+(pengesahan) fi Supabase PostgreSQL (data) / Supabase Storage (fail) / Supabase Edge Functions (logik bisnes &
+proksi selamat) fi Z.AI API (GLM-5.2) untuk keperluan penjanaan kandungan AI. Semua panggilan ke Z.AI API
+disalurkan melalui Supabase Edge Function atau Netlify Function bagi mengelakkan kunci API (API key) terdedah
+pada sisi klien (client-side).
+PENTING (Keselamatan): API key Z.AI dan Supabase Service Role Key TIDAK BOLEH diletakkan dalam
+kod frontend. Semua panggilan sensitif mesti melalui Edge Function/Serverless Function dengan
+environment variables yang disulitkan (encrypted secrets) di Netlify/Supabase.
+4.3 Struktur Repositori (Cadangan)
+siri-ai/
+|-- src/components/ # UI komponen glassmorphism
+|-- src/pages/ # Dashboard, VideoStudio, Learning, Auth
+|-- src/lib/supabaseClient.js
+|-- src/lib/zaiClient.js # Panggilan ke Edge Function (bukan terus ke Z.AI)
+|-- supabase/migrations/ # Skema SQL & seed data dummy
+|-- supabase/functions/generate-content/ # Edge Function proksi GLM-5.2
+|-- netlify.toml
+`-- package.json
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 4
+
+=== PAGE 6 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+5. Reka Bentuk UI/UX — Glassmorphism
+Keseluruhan sistem SIRI-AI menggunakan bahasa reka bentuk Glassmorphism — elemen kaca translusen
+(frosted-glass), bayang lembut, sudut membulat, dan latar belakang gradien warna korporat JTM (navy, teal, emas)
+untuk memberikan pengalaman visual moden, bersih dan mendalam (depth).
+5.1 Prinsip Reka Bentuk Teras
+lBackdrop-blur: setiap kad/panel utama menggunakan backdrop-filter: blur(16px) dengan latar belakang
+rgba(255,255,255,0.12–0.18).
+lLapisan kedalaman (depth layering): gradien latar belakang statik (mesh gradient) di lapisan paling bawah, diikuti
+kad kaca translusen di atasnya.
+lSempadan halus (subtle border): border 1px rgba(255,255,255,0.25) bagi menonjolkan tepi kaca.
+lBayang lembut (soft shadow): box-shadow lembut bagi memberi kesan 'terapung' (floating) pada kad.
+lKontras & Aksesibiliti: teks utama kekal pada nisbah kontras WCAG AA minimum walaupun di atas latar
+translusen — guna overlay gelap/terang mengikut keperluan.
+lResponsif mobile-first: reka letak grid yang menyesuaikan diri dari 1 lajur (mudah alih) hingga 3–4 lajur (desktop).
+lMikro-interaksi: kesan hover lembut, peralihan (transition) 200–300ms, animasi kemasukan kad (fade + slide).
+5.2 Palet Warna Cadangan
+Nama Kod Hex Kegunaan
+Navy Primer #0B2545 Latar gradien utama, teks tajuk
+Teal Aksen #0F766E Butang utama, ikon aktif, aksen jenama
+Emas JTM #C9A227 Aksen kehormatan/Kemerdekaan, notis penting
+Kaca Cahaya rgba(255,255,255,0.14) Latar kad glassmorphism (mod terang di atas gradien)
+Kaca Gelap rgba(15,23,42,0.35) Latar kad glassmorphism (mod gelap/overlay)
+Teks Utama #1E2A3A / #F3F6FA Teks pada latar terang / gelap
+5.3 Komponen UI Standard
+lGlassCard — komponen kad asas dengan blur, border translusen dan bayang, digunakan di seluruh dashboard.
+lGlassNavbar — bar navigasi terapung (floating navbar) translusen dengan logo JTM dan menu utama.
+lGlassModal — tetingkap pop-up (cth: cipta tugasan, tambah mesyuarat) dengan latar overlay blur.
+lStatCard — kad ringkasan statistik (cth: bilangan tugasan siap, mesyuarat minggu ini) dengan ikon dan trend.
+lKanbanBoard — papan seret-lepas (drag-and-drop) untuk Perancangan Kerja.
+lTypography: font Poppins/Inter untuk tajuk, Inter/Noto Sans untuk teks badan — menyokong Bahasa Malaysia &
+English.
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 5
+
+=== PAGE 7 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+6. Modul 1: Rekabentuk & Pembangunan Video
+Kemerdekaan Berkonsepkan AI
+Modul ini membolehkan pasukan kreatif JTM merancang, menjana idea, dan menghasilkan spesifikasi produksi
+video sempena sambutan Bulan Kemerdekaan dengan bantuan model AI GLM-5.2 (Z.AI). Modul ini berfungsi
+sebagai 'studio perancangan digital' — bukan enjin rendering video, tetapi alat perancangan kandungan bertenaga
+AI yang mempercepatkan proses pra-produksi.
+6.1 Ciri-Ciri Utama (Key Features)
+Ciri Penerangan Fungsian
+Penjana Konsep &amp; Tema AI Pengguna memasukkan tema (cth: 'Kemerdekaan &amp; Perpaduan Digital'); GLM-5.2 menjana beberapa cadangan konsep kreatif, mood board huraian teks, dan nada (tone) video.
+Penjana Skrip AI Berdasarkan konsep terpilih, sistem menjana draf skrip/naratif video (narration script) dalam Bahasa Malaysia dan/atau Bahasa Inggeris, yang boleh disunting terus dalam editor teks.
+Pembina Papan Cerita (Storyboard ABnutialdrear m) uka seret-lepas untuk menyusun adegan (scenes) mengikut susunan; setiap adegan mengandungi huraian visual, cadangan shot AI, tempoh masa, dan nota audio/muzik.
+Cadangan Visual &amp; Prompt AIUntuk setiap adegan, GLM-5.2 menjana 'prompt' penerangan visual terperinci yang boleh digunakan bersama alat penjanaan imej/video AI pihak ketiga (cth: untuk rendering luar sistem).
+Pengurusan Aset Media Muat naik footaj sedia ada, logo, muzik latar dan grafik ke Supabase Storage, disusun mengikut projek video.
+Semakan &amp; Kelulusan (ApprovAallu Wr koerkrjfalo swe)makan berperingkat: Draf fi Semakan Ketua Unit fi Diluluskan fi Sedia untuk Produksi, dengan sejarah komen (comment history).
+Eksport Spesifikasi Produksi Eksport pakej storyboard + skrip + prompt visual dalam format PDF/JSON untuk diserahkan kepada krew produksi atau vendor rendering video.
+6.2 Aliran Kerja Pengguna (User Flow)
+l1. Pengguna mencipta 'Projek Video' baharu dan menetapkan tema Kemerdekaan.
+l2. Sistem memanggil GLM-5.2 (melalui Edge Function) untuk menjana 3–5 cadangan konsep kreatif.
+l3. Pengguna memilih/menyunting konsep, kemudian menjana draf skrip separuh automatik.
+l4. Pengguna membina storyboard adegan demi adegan menggunakan GlassCard seret-lepas.
+l5. Setiap adegan dijana cadangan visual prompt AI secara automatik (boleh disunting).
+l6. Projek dihantar untuk kelulusan Ketua Unit melalui alur kerja status.
+l7. Setelah diluluskan, pakej penuh dieksport untuk fasa produksi/rendering sebenar.
+6.3 Contoh Skema Jadual (Ringkas)
+video_projects(id, title, theme, status, created_by, created_at)
+video_scenes(id, project_id, scene_order, description, visual_prompt, duration_sec, notes)
+video_assets(id, project_id, file_url, asset_type, uploaded_by, uploaded_at)
+video_approvals(id, project_id, reviewer_id, status, comment, reviewed_at)
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 6
+
+=== PAGE 8 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+7. Modul 2: Dashboard Operasi & Pengurusan Kerja
+Dashboard bertindak sebagai pusat kawalan utama sistem, memaparkan empat (4) elemen teras dalam satu
+paparan bersepadu bergaya glassmorphism: Perancangan Kerja, Mesyuarat, Kerja-Kerja Utama, dan Buletin.
+7.1 Reka Letak Dashboard (Layout)
+lBar Statistik Atas: 4 StatCard (Jumlah Tugasan Aktif, Mesyuarat Minggu Ini, Kerja Utama Tertunggak,
+Pengumuman Baharu).
+lPanel Kiri (2/3 lebar): Papan Kanban Perancangan Kerja + Senarai Kerja-Kerja Utama (Key Tasks) dengan
+penunjuk keutamaan (priority badge) dan tarikh akhir.
+lPanel Kanan (1/3 lebar): Widget Mesyuarat Akan Datang (kalendar ringkas + senarai) dan Feed Buletin (kad
+translusen dengan gambar/ikon).
+lKemas kini masa nyata (realtime) menggunakan Supabase Realtime — sebarang perubahan status tugasan
+dipaparkan serta-merta tanpa muat semula halaman.
+7.2 Sub-Modul: Perancangan Kerja (Work Planning)
+lPapan Kanban dengan lajur: Belum Mula, Dalam Tindakan, Semakan, Selesai.
+lSetiap kad tugasan memaparkan: tajuk, pemilik tugas (assignee), tarikh akhir, tahap keutamaan
+(Tinggi/Sederhana/Rendah), dan peratus kemajuan.
+lFungsi seret-lepas (drag-and-drop) untuk menukar status tugasan.
+lPenapis (filter) mengikut unit, pemilik, dan tempoh masa.
+lNotifikasi automatik apabila tugasan hampir tamat tempoh.
+7.3 Sub-Modul: Mesyuarat (Meeting Management)
+lPenjadualan mesyuarat dengan tajuk, tarikh/masa, lokasi/pautan maya, senarai peserta dan agenda.
+lFungsi rekod minit mesyuarat (meeting minutes) berserta tindakan susulan (action items) yang terus dipaut ke
+modul Kerja-Kerja Utama.
+lCadangan ringkasan minit mesyuarat berbantukan AI (GLM-5.2) — pengguna boleh menampal nota mentah dan
+sistem menjana ringkasan berstruktur.
+lPaparan kalendar mingguan/bulanan dalam gaya kad kaca translusen.
+7.4 Sub-Modul: Kerja-Kerja Utama (Key Tasks / KPI Tracker)
+lSenarai tugasan strategik peringkat jabatan/unit yang berbeza daripada tugasan harian biasa (Work Planning).
+lSetiap Kerja Utama mempunyai sasaran (target), petunjuk prestasi (KPI), peratus pencapaian, dan pegawai
+bertanggungjawab.
+lPaparan carta kemajuan (progress bar) bergaya glassmorphism dengan kod warna status (hijau/kuning/merah).
+lFungsi jana laporan ringkas berkala (mingguan/bulanan) untuk pihak pengurusan.
+7.5 Sub-Modul: Buletin (Bulletin / Announcement Board)
+lPengumuman rasmi, notis pekeliling, dan berita jabatan dipaparkan dalam bentuk kad kaca (glass card) dengan
+imej header.
+lPentadbir/Pengurus boleh mencipta, menyunting, menjadualkan (schedule publish) dan mengarkibkan buletin.
+lKategori buletin: Pengumuman Rasmi, Acara/Aktiviti, Notis Pentadbiran, Perayaan/Kemerdekaan.
+lPilihan 'pin' (sematkan) buletin penting di bahagian atas feed.
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 7
+
+=== PAGE 9 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+8. Modul 3: Modul Pembelajaran — Drone for Beginner
+Modul e-pembelajaran ini menyediakan kursus asas pengendalian dan pengetahuan dron (Unmanned Aerial
+Vehicle/UAV) untuk kakitangan dan pelatih JTM, direka dalam format modular yang mudah diikuti oleh pemula
+(beginner) tanpa pengalaman terdahulu.
+8.1 Struktur Kandungan Kursus (Cadangan Silibus)
+Modul Tajuk Kandungan Ringkas
+M1 Pengenalan Dunia Dron Sejarah, jenis-jenis dron, kegunaan industri &amp; awam
+M2 Komponen &amp; Cara Kerja Dron Motor, ESC, flight controller, baling-baling, bateri LiPo
+M3 Undang-Undang &amp; Keselamatan UdaPrae rMaatularayns iaCAAM, zon larangan terbang, permit &amp; lesen
+M4 Asas Penerbangan &amp; Kawalan Kawalan kayu bidik (joystick), mod penerbangan, prosedur pra-terbang
+M5 Aplikasi Dron dalam Kerja JTM Pemetaan, tinjauan udara, dokumentasi acara/latihan
+M6 Penilaian &amp; Kuiz Akhir Kuiz aneka pilihan + senarai semak amali (practical checklist)
+8.2 Ciri-Ciri Fungsian Modul e-Pembelajaran
+lStruktur kursus hierarki: Kursus fi Modul fi Pelajaran (Lesson) — setiap pelajaran boleh mengandungi teks,
+video terbenam (embedded video), imej, dan fail PDF.
+lPenjejakan kemajuan (progress tracking) automatik — peratus siap kursus dipaparkan pada kad kaca profil
+pelajar.
+lKuiz interaktif selepas setiap modul dengan penjanaan soalan berbantukan AI (GLM-5.2) berdasarkan kandungan
+pelajaran, disemak dan diluluskan oleh jurulatih sebelum diterbitkan.
+lSijil Siap Kursus (Certificate of Completion) dijana automatik dalam format PDF apabila pelatih mencapai markah
+lulus minimum.
+lPapan Pendahulu (Leaderboard) ringkas berdasarkan markah kuiz dan kadar penyiapan kursus — bersifat pilihan
+(toggle on/off).
+lPanel Jurulatih (Instructor Panel) untuk memuat naik kandungan, menyemak keputusan kuiz pelatih, dan menjana
+laporan kemajuan kelas.
+8.3 Contoh Skema Jadual (Ringkas)
+courses(id, title, description, level, created_by)
+course_modules(id, course_id, module_order, title)
+lessons(id, module_id, lesson_order, title, content_type, content_url, body_text)
+quizzes(id, module_id, question, options_json, correct_answer, ai_generated)
+enrollments(id, course_id, user_id, progress_percent, status, enrolled_at)
+quiz_attempts(id, quiz_id, user_id, selected_answer, is_correct, attempted_at)
+certificates(id, enrollment_id, issued_at, certificate_url)
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 8
+
+=== PAGE 10 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+9. Reka Bentuk Pangkalan Data (Supabase) & Data Dummy
+Pangkalan data dibina di atas PostgreSQL (Supabase) dengan Row Level Security (RLS) diaktifkan pada semua
+jadual yang mengandungi data sensitif/berkaitan pengguna. Data dummy disediakan terus dalam backend sebenar
+(bukan mock JSON berasingan) melalui skrip 'seed' SQL supaya sistem boleh didemonstrasikan dan diuji dengan
+data yang realistik sejak hari pertama.
+9.1 Senarai Jadual Utama (ERD Ringkas)
+Jadual Tujuan Hubungan Utama
+profiles Maklumat profil pengguna &amp; peranan (extends a1u-tkhe.u-1s edresn)gan auth.users
+roles Definisi peranan sistem (Admin, Pengurus, dsb.) 1-ke-banyak dengan profiles
+tasks Tugasan Perancangan Kerja (Kanban) Milik unit/pengguna; pautan ke key_tasks (pilihan)
+meetings Rekod mesyuarat &amp; minit Banyak-ke-banyak dengan profiles (peserta)
+meeting_action_items Tindakan susulan daripada mesyuarat Pautan ke meetings &amp; tasks
+key_tasks Kerja-kerja utama/KPI strategik Milik unit; pautan ke profiles (pegawai bertanggungjawab)
+bulletins Buletin/pengumuman jabatan Dicipta oleh profiles (Admin/Pengurus)
+video_projects / video_sceneMs o/ dvuidl e1o —_a sSsteutdsio Video Kemerdekaan AI Lihat Seksyen 6.3
+courses / course_modules / leMsosdounls 3 / —qu iez-zPeesm / beenlraojallmraenn Dtsr o/ nceertificates Lihat Seksyen 8.3
+ai_generation_logs Log setiap panggilan ke Z.AI GLM-5.2 (audit &amp; kPoasu)tan ke profiles (pemohon)
+9.2 Contoh Coretan SQL — Jadual & RLS
+create table public.tasks (
+id uuid primary key default gen_random_uuid(),
+title text not null,
+status text check (status in ('todo','in_progress','review','done')) default 'todo',
+priority text check (priority in ('low','medium','high')) default 'medium',
+assignee_id uuid references public.profiles(id),
+due_date date,
+created_at timestamptz default now()
+);
+alter table public.tasks enable row level security;
+create policy "Users can view unit tasks" on public.tasks
+for select using (auth.uid() is not null);
+create policy "Assignee or admin can update" on public.tasks
+for update using (auth.uid() = assignee_id or public.is_admin(auth.uid()));
+9.3 Data Dummy Sedia Guna (Contoh Seed Data)
+Data dummy berikut dimuatkan terus ke dalam Supabase melalui fail migrasi/seed (bukan data statik sisi klien)
+supaya semua fungsi CRUD, carta, dan laporan boleh diuji dengan data sebenar dalam backend:
+Jadual Bilangan Rekod Contoh Kandungan
+Dummy
+profiles 12 pengguna Admin JTM, 3 Pengurus Unit, 5 Pegawai, 3 Pelatih
+tasks 25 tugasan Merentasi 4 status Kanban, keutamaan pelbagai
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 9
+
+=== PAGE 11 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+Jadual Bilangan Rekod Contoh Kandungan
+Dummy
+meetings 8 mesyuarat Mesyuarat pengurusan mingguan, taklimat projek video
+key_tasks 6 kerja utama KPI unit dengan peratus pencapaian 20%–90%
+bulletins 10 buletin 3 bertema Kemerdekaan, selebihnya notis pentadbiran
+video_projects 2 projek 'Merdeka 2026: Suara Digital' (draf), 'Salam Kemerdekaan AI' (diluluskan)
+courses 1 kursus penuh Drone for Beginner — 6 modul, 18 pelajaran, 12 soalan kuiz
+enrollments 9 pendaftaran Progress 0%–100% merentasi 3 pelatih dummy
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 10
+
+=== PAGE 12 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+10. Integrasi AI — Z.AI Model GLM-5.2
+Z.AI (model GLM-5.2) digunakan sebagai enjin AI generatif utama sistem, disambungkan secara selamat melalui
+Supabase Edge Functions/Netlify Functions bagi mengelakkan pendedahan kunci API pada sisi pelanggan
+(client-side).
+10.1 Kes Penggunaan (Use Cases) GLM-5.2 dalam Sistem
+Modul Kes Penggunaan AI
+Modul 1 — Video Kemerdekaan Penjanaan konsep kreatif, draf skrip naratif, dan prompt visual bagi setiap adegan storyboard
+Modul 2 — Mesyuarat Ringkasan automatik minit mesyuarat daripada nota mentah; cadangan tindakan susulan
+Modul 2 — Buletin Bantuan penulisan/penambahbaikan gaya bahasa pengumuman rasmi
+Modul 3 — e-Pembelajaran Penjanaan draf soalan kuiz aneka pilihan berdasarkan kandungan pelajaran dron
+Sistem Umum Carian pintar (semantic search) ringkas bagi tugasan/buletin lampau (fasa akan datang)
+10.2 Reka Bentuk Integrasi (Keselamatan API)
+lSemua permintaan ke API Z.AI GLM-5.2 disalurkan melalui Supabase Edge Function bernama generate-content.
+lKunci API Z.AI disimpan sebagai 'secret' persekitaran (environment variable) di Supabase — tidak pernah
+terdedah kepada frontend.
+lHad kadar (rate limiting) dikuatkuasakan pada peringkat Edge Function untuk mengelakkan penyalahgunaan/kos
+berlebihan.
+lSetiap panggilan direkod dalam jadual ai_generation_logs (pemohon, modul, token digunakan, masa) untuk tujuan
+audit dan kawalan kos.
+lKandungan hasil AI sentiasa disemak/disunting oleh pengguna sebelum diterbitkan secara rasmi
+(human-in-the-loop) — sistem tidak menerbitkan kandungan AI secara automatik tanpa semakan.
+10.3 Contoh Struktur Permintaan API (Ringkas)
+POST /functions/v1/generate-content
+Authorization: Bearer <supabase_jwt>
+Body: { "module": "video_concept", "theme": "Kemerdekaan & Perpaduan Digital", "language": "ms" }
+fi Edge Function memanggil Z.AI API (model: glm-5.2) menggunakan kunci rahsia sisi pelayan
+fi Respons disaring & diformat fi dikembalikan kepada frontend sebagai draf boleh sunting
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 11
+
+=== PAGE 13 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+11. Keperluan Bukan Fungsian (Non-Functional
+Requirements)
+Kategori Keperluan
+Prestasi Masa muat halaman dashboard < 2.5 saat pada sambungan 4G; carta/kad utama dimuat secara progresif (lazy loading)
+Kebolehskalaan Seni bina serverless Supabase/Netlify membolehkan sistem berskala automatik mengikut beban tanpa penambahan pelayan manual
+Kebolehcapaian (AccessibilityM)ematuhi WCAG 2.1 AA — kontras teks mencukupi walaupun pada latar glassmorphism translusen, sokongan navigasi papan kekunci
+Responsif Reka letak mobile-first; disahkan berfungsi baik pada skrin 360px hingga 1920px+
+Kebolehpercayaan Sasaran ketersediaan (uptime) sistem 99.5% bulanan, bergantung kepada SLA Supabase/Netlify
+Kebolehselenggaraan Struktur kod modular, komponen boleh guna semula, migrasi pangkalan data berversi (versioned migrations)
+Kebolehgunaan (Usability) Antara muka dwibahasa (Bahasa Malaysia sebagai bahasa utama, English sebagai pilihan)
+Kesesuaian Pelayar Sokongan penuh Chrome, Edge, Firefox, Safari (2 versi terkini)
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 12
+
+=== PAGE 14 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+12. Keselamatan, Privasi & Pematuhan
+lPengesahan pengguna melalui Supabase Auth (JWT) dengan sesi token yang luput (expiring session) dan
+penyegaran token selamat.
+lRow Level Security (RLS) diaktifkan pada semua jadual data pengguna — pengguna hanya boleh
+mengakses/mengubah data mengikut peranan dan pemilikan.
+lSemua trafik disulitkan melalui HTTPS/TLS (dikuatkuasakan secara automatik oleh Netlify & Supabase).
+lPematuhan kepada Akta Perlindungan Data Peribadi (PDPA) Malaysia bagi data peribadi kakitangan/pelatih.
+lKunci API sensitif (Z.AI, Service Role Key) disimpan sebagai environment secrets — tidak dikomit ke repositori Git.
+lLog audit bagi tindakan kritikal (kelulusan video, penerbitan buletin, penjanaan AI) untuk tujuan akauntabiliti.
+lSandaran (backup) pangkalan data automatik harian melalui kemudahan sedia ada Supabase.
+lSemakan keselamatan (security review) sebelum pelancaran produksi, termasuk ujian penembusan asas (basic
+penetration testing) ke atas endpoint Edge Function.
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 13
+
+=== PAGE 15 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+13. Pelan Penempatan (Deployment Plan) — Netlify
+13.1 Persekitaran (Environments)
+Persekitaran Cawangan Git Tujuan
+Development develop Ujian pembangunan harian, Supabase Project berasingan dengan data dummy
+Staging/UAT staging Ujian penerimaan pengguna oleh pihak JTM sebelum pelancaran
+Production main Persekitaran langsung untuk kegunaan sebenar kakitangan/pelatih JTM
+13.2 Aliran CI/CD
+lKod disimpan di repositori Git (GitHub/GitLab); setiap 'push'/'merge' ke cawangan berkaitan mencetuskan build
+automatik di Netlify.
+lNetlify menjalankan npm run build dan menerbitkan hasil build (folder dist/) ke CDN global Netlify.
+lEnvironment variables (URL Supabase, anon key, dsb.) dikonfigurasi dalam Netlify Site Settings — bukan dalam
+kod sumber.
+lPratonton Deploy (Deploy Preview) automatik dijana untuk setiap Pull Request bagi tujuan semakan sebelum
+digabungkan.
+lDomain khas (custom domain) JTM disambungkan ke Netlify berserta sijil SSL percuma (Let's Encrypt, automatik).
+13.3 Contoh Konfigurasi netlify.toml
+[build]
+command = "npm run build"
+publish = "dist"
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 14
+
+=== PAGE 16 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+14. Pelan Pembangunan & Garis Masa (Roadmap)
+Fasa Tempoh Cadangan Skop Utama
+Fasa 0 — Persediaan Minggu 1 Persediaan repositori, projek Supabase, akaun Netlify, akses API Z.AI
+Fasa 1 — Asas Sistem Minggu 2–3 Auth, RBAC, reka bentuk sistem UI Glassmorphism (design system), skema pangkalan data teras
+Fasa 2 — Modul 2 (Dashboard) Minggu 4–6 Perancangan Kerja, Mesyuarat, Kerja-Kerja Utama, Buletin + data dummy
+Fasa 3 — Modul 1 (Video AI) Minggu 7–9 Studio Video Kemerdekaan AI, integrasi GLM-5.2, storyboard builder
+Fasa 4 — Modul 3 (e-Learning) Minggu 10–12 Struktur kursus Drone for Beginner, kuiz, sijil, leaderboard
+Fasa 5 — UAT &amp; PelancaranMinggu 13–14 Ujian penerimaan pengguna, pembetulan pepijat, deployment production
+Nota: Garis masa di atas adalah anggaran awal berdasarkan skop Fasa 1 (In-Scope, Seksyen 2.2) dan boleh disemak semula bergantung
+kepada saiz pasukan pembangunan sebenar dan kelulusan pihak pengurusan JTM.
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 15
+
+=== PAGE 17 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+15. Kriteria Penerimaan & Metrik Kejayaan
+15.1 Kriteria Penerimaan (Acceptance Criteria) — Ringkasan
+lPengguna yang sah boleh log masuk dan melihat dashboard mengikut peranan masing-masing dalam masa < 3
+saat.
+lKad tugasan dalam papan Kanban boleh diseret antara lajur status dan kemas kini disimpan secara realtime ke
+Supabase.
+lPengguna Modul 1 boleh menjana sekurang-kurangnya satu draf konsep/skrip video menggunakan GLM-5.2 dan
+menyimpannya sebagai storyboard.
+lPelatih boleh mendaftar, mengikuti pelajaran, menjawab kuiz, dan menerima sijil digital automatik selepas lulus
+kursus Drone for Beginner.
+lSemua panel/kad dalam sistem mempamerkan kesan glassmorphism (blur, translusensi, bayang) secara
+konsisten di seluruh sistem, termasuk pada peranti mudah alih.
+lSistem berjaya di-deploy ke Netlify dengan domain berfungsi dan disambungkan kepada projek Supabase
+production berserta data dummy yang boleh didemonstrasikan.
+15.2 Metrik Kejayaan (Success Metrics)
+Metrik Sasaran
+Kadar penggunaan dashboard harian oleh kakitangan ‡ 70% kakitangan sasaran log masuk mingguan dalam bulan pertama
+Masa purata penyediaan draf konsep video Pengurangan sekurang-kurangnya 50% berbanding kaedah manual sedia ada
+Kadar penyiapan kursus Drone for Beginner ‡ 60% pelatih berdaftar menyiapkan kursus dalam tempoh 30 hari
+Kepuasan pengguna (UAT survey) Skor kepuasan purata ‡ 4.0/5.0
+Ketersediaan sistem (uptime) ‡ 99.5% sebulan selepas pelancaran production
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 16
+
+=== PAGE 18 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+16. Risiko & Strategi Mitigasi
+Risiko Impak Strategi Mitigasi
+Had kadar/kos API Z.AI GLM-5.2 melSeebdihei rjhaanngak–aTainnggi Cache respons AI biasa, had penggunaan setiap pengguna, pemantauan kos melalui ai_generation_logs
+Kandungan AI tidak tepat/tidak sesuaTi ibnugdgaiya Alur kerja semakan manusia (human-in-the-loop) sebelum sebarang penerbitan rasmi
+Kelewatan integrasi RLS menyebabkTainn gkgeibocoran data Ujian RLS menyeluruh semasa fasa QA sebelum UAT; semakan kod (code review) wajib untuk setiap polisi RLS baharu
+Prestasi kesan blur (glassmorphism) Smeedmerbhearni kaesan kepaGdau npae rbaanctki dreronpd-afihlt esrp seescifaikraas oiptimum, sediakan mod 'reduced transparency' sebagai fallback
+Pertukaran keperluan skop semasa pSeemdbearhnagnuanan Kawalan skop ketat melalui PRD ini; sebarang perubahan skop memerlukan kelulusan bertulis &amp; kemas kini dokumen
+Ketergantungan kepada perkhidmataSne pdihearhka kneatiga (SupaPbaesmea/Nnteatulifayn/Z S.ALIA) vendor, pelan sandaran data berkala, senarai semak vendor alternatif untuk risiko jangka panjang
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 17
+
+=== PAGE 19 ===
+SIRI-AI · JABATAN TENAGA MANUSIA Product Requirements Document — v1.0
+17. Lampiran
+17.1 Senarai Environment Variables (Cadangan)
+Nama Variable Lokasi Tujuan
+VITE_SUPABASE_URL Netlify (public) URL projek Supabase
+VITE_SUPABASE_ANON_KEY Netlify (public) Kunci awam Supabase untuk client SDK
+SUPABASE_SERVICE_ROLE_KEY Supabase Edge Function secret Akses penuh pelayan sahaja — jangan dedahkan
+ZAI_API_KEY Supabase Edge Function secret Kunci API Z.AI GLM-5.2 — panggilan sisi pelayan sahaja
+17.2 Senarai Semak Sebelum Pelancaran (Pre-Launch Checklist)
+ln Semua RLS policy diuji bagi setiap peranan pengguna
+ln Data dummy disahkan realistik dan tidak mengandungi maklumat sebenar/sensitif
+ln Kunci API Z.AI & Supabase Service Role disahkan tidak terdedah pada sisi klien
+ln Ujian responsif merentasi peranti mudah alih, tablet, desktop
+ln Sijil SSL & domain custom disahkan berfungsi di Netlify
+ln Sandaran pangkalan data awal (baseline backup) diambil sebelum go-live
+ln Sesi latihan ringkas untuk pentadbir sistem & jurulatih kursus dron
+— Tamat Dokumen PRD v1.0 — Sila rujuk kepada Pasukan Pembangunan / Unit ICT JTM untuk sebarang pertanyaan lanjut mengenai
+spesifikasi teknikal dokumen ini.
+Terhad — Kegunaan Dalaman SIRI-AI PRD v1.0 Muka Surat 18
+

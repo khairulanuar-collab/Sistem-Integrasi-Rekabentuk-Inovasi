@@ -1,0 +1,294 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   SIRI-AI JTM — Glassmorphism Design System
+   Per PRD §5: Navy Primer #0B2545, Teal Aksen #0F766E, Emas JTM #C9A227
+   Glass surfaces: rgba(255,255,255,0.14), backdrop-blur(16px)
+   ============================================================ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-poppins), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-poppins);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  /* SIRI-AI brand palette */
+  --color-navy: #0B2545;
+  --color-teal: #0F766E;
+  --color-gold: #C9A227;
+  --color-navy-soft: #1B3A6B;
+  --color-teal-soft: #14B8A6;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+}
+
+:root {
+  --radius: 0.875rem;
+  /* Base canvas — the glassmorphism gradient lives behind everything */
+  --background: #0a1a35;
+  --foreground: #F3F6FA;
+  --card: rgba(255, 255, 255, 0.10);
+  --card-foreground: #F3F6FA;
+  --popover: rgba(15, 23, 42, 0.85);
+  --popover-foreground: #F3F6FA;
+  /* Primary = Navy Primer */
+  --primary: #0F766E;
+  --primary-foreground: #F0FDFA;
+  /* Secondary = soft navy */
+  --secondary: rgba(255, 255, 255, 0.08);
+  --secondary-foreground: #F3F6FA;
+  --muted: rgba(255, 255, 255, 0.06);
+  --muted-foreground: rgba(243, 246, 250, 0.65);
+  /* Accent = Gold JTM */
+  --accent: #C9A227;
+  --accent-foreground: #1E2A3A;
+  --destructive: #DC2626;
+  --border: rgba(255, 255, 255, 0.18);
+  --input: rgba(255, 255, 255, 0.12);
+  --ring: #C9A227;
+  /* Chart colors aligned to PRD palette */
+  --chart-1: #0F766E; /* teal */
+  --chart-2: #C9A227; /* gold */
+  --chart-3: #14B8A6; /* teal-soft */
+  --chart-4: #1B3A6B; /* navy-soft */
+  --chart-5: #F59E0B; /* amber */
+  --sidebar: rgba(11, 37, 69, 0.45);
+  --sidebar-foreground: #F3F6FA;
+  --sidebar-primary: #0F766E;
+  --sidebar-primary-foreground: #F0FDFA;
+  --sidebar-accent: rgba(255, 255, 255, 0.08);
+  --sidebar-accent-foreground: #F3F6FA;
+  --sidebar-border: rgba(255, 255, 255, 0.15);
+  --sidebar-ring: #C9A227;
+}
+
+.dark {
+  /* Same as light — glassmorphism always on dark navy gradient */
+  --background: #0a1a35;
+  --foreground: #F3F6FA;
+  --card: rgba(255, 255, 255, 0.10);
+  --card-foreground: #F3F6FA;
+  --popover: rgba(15, 23, 42, 0.85);
+  --popover-foreground: #F3F6FA;
+  --primary: #0F766E;
+  --primary-foreground: #F0FDFA;
+  --secondary: rgba(255, 255, 255, 0.08);
+  --secondary-foreground: #F3F6FA;
+  --muted: rgba(255, 255, 255, 0.06);
+  --muted-foreground: rgba(243, 246, 250, 0.65);
+  --accent: #C9A227;
+  --accent-foreground: #1E2A3A;
+  --destructive: #DC2626;
+  --border: rgba(255, 255, 255, 0.18);
+  --input: rgba(255, 255, 255, 0.12);
+  --ring: #C9A227;
+  --chart-1: #0F766E;
+  --chart-2: #C9A227;
+  --chart-3: #14B8A6;
+  --chart-4: #1B3A6B;
+  --chart-5: #F59E0B;
+  --sidebar: rgba(11, 37, 69, 0.45);
+  --sidebar-foreground: #F3F6FA;
+  --sidebar-primary: #0F766E;
+  --sidebar-primary-foreground: #F0FDFA;
+  --sidebar-accent: rgba(255, 255, 255, 0.08);
+  --sidebar-accent-foreground: #F3F6FA;
+  --sidebar-border: rgba(255, 255, 255, 0.15);
+  --sidebar-ring: #C9A227;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html, body {
+    @apply text-foreground;
+    min-height: 100%;
+  }
+  body {
+    /* PRD §5.1: mesh gradient at lowest layer — navy base with teal & gold blooms */
+    background-color: #0a1a35;
+    background-image:
+      radial-gradient(900px circle at 12% 8%, rgba(15, 118, 110, 0.42), transparent 55%),
+      radial-gradient(820px circle at 88% 18%, rgba(201, 162, 39, 0.30), transparent 50%),
+      radial-gradient(1100px circle at 78% 92%, rgba(27, 58, 107, 0.55), transparent 55%),
+      radial-gradient(700px circle at 22% 88%, rgba(15, 118, 110, 0.28), transparent 60%),
+      linear-gradient(135deg, #0B2545 0%, #0a1a35 60%, #08182c 100%);
+    background-attachment: fixed;
+    color: #F3F6FA;
+  }
+  ::selection {
+    background: rgba(201, 162, 39, 0.35);
+    color: #fff;
+  }
+  /* Custom scrollbar for long lists (UI rules) */
+  .scroll-glass::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scroll-glass::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+  }
+  .scroll-glass::-webkit-scrollbar-thumb {
+    background: rgba(15, 118, 110, 0.55);
+    border-radius: 8px;
+  }
+  .scroll-glass::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 118, 110, 0.75);
+  }
+}
+
+/* ============================================================
+   Glassmorphism utility classes — PRD §5.1
+   ============================================================ */
+@layer components {
+  /* GlassCard — base frosted panel */
+  .glass {
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    box-shadow:
+      0 8px 32px rgba(8, 24, 44, 0.35),
+      inset 0 1px 0 rgba(255,255,255,0.18);
+    border-radius: var(--radius-2xl);
+  }
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow:
+      0 12px 40px rgba(8, 24, 44, 0.45),
+      inset 0 1px 0 rgba(255,255,255,0.22);
+    border-radius: var(--radius-2xl);
+  }
+  .glass-dark {
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 32px rgba(8, 24, 44, 0.4);
+    border-radius: var(--radius-2xl);
+  }
+  .glass-nav {
+    background: rgba(11, 37, 69, 0.55);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 6px 24px rgba(8, 24, 44, 0.35);
+  }
+  .glass-hover {
+    transition: all 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .glass-hover:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.32);
+    transform: translateY(-2px);
+    box-shadow:
+      0 14px 40px rgba(8, 24, 44, 0.45),
+      inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+  /* GlassModal overlay */
+  .glass-overlay {
+    background: rgba(8, 18, 38, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  /* Gradient text for headings */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #F0CE6E 0%, #C9A227 50%, #F0CE6E 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-teal {
+    background: linear-gradient(135deg, #5EEAD4 0%, #0F766E 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Status pill colors */
+  .pill-todo { background: rgba(148, 163, 184, 0.22); color: #CBD5E1; border: 1px solid rgba(148,163,184,0.35); }
+  .pill-in-progress { background: rgba(15, 118, 110, 0.30); color: #5EEAD4; border: 1px solid rgba(15,118,110,0.45); }
+  .pill-review { background: rgba(201, 162, 39, 0.28); color: #FCD34D; border: 1px solid rgba(201,162,39,0.45); }
+  .pill-done { background: rgba(34, 197, 94, 0.28); color: #86EFAC; border: 1px solid rgba(34,197,94,0.45); }
+  .pill-high { background: rgba(220, 38, 38, 0.28); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.45); }
+  .pill-medium { background: rgba(201, 162, 39, 0.28); color: #FCD34D; border: 1px solid rgba(201,162,39,0.45); }
+  .pill-low { background: rgba(15, 118, 110, 0.28); color: #5EEAD4; border: 1px solid rgba(15,118,110,0.45); }
+  .pill-on-track { background: rgba(34, 197, 94, 0.28); color: #86EFAC; border: 1px solid rgba(34,197,94,0.45); }
+  .pill-at-risk { background: rgba(201, 162, 39, 0.28); color: #FCD34D; border: 1px solid rgba(201,162,39,0.45); }
+  .pill-delayed { background: rgba(220, 38, 38, 0.28); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.45); }
+  .pill-approved { background: rgba(34, 197, 94, 0.28); color: #86EFAC; border: 1px solid rgba(34,197,94,0.45); }
+  .pill-pending { background: rgba(201, 162, 39, 0.28); color: #FCD34D; border: 1px solid rgba(201,162,39,0.45); }
+  .pill-rejected { background: rgba(220, 38, 38, 0.28); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.45); }
+  /* Animations — PRD §5.1: micro-interactions 200-300ms */
+  @keyframes glass-fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-glass-in {
+    animation: glass-fade-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.65; }
+  }
+  .animate-pulse-soft {
+    animation: pulse-soft 2.4s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .shimmer {
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.04) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.8s linear infinite;
+  }
+}
+
+/* Reduced transparency fallback (PRD §16 Risk) */
+@media (prefers-reduced-transparency: reduce) {
+  .glass, .glass-strong, .glass-dark, .glass-nav {
+    background: rgba(11, 37, 69, 0.92) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}

@@ -1,0 +1,393 @@
+// SIRI-AI JTM — Prisma schema
+// Adapted from PRD §9 (Supabase schema) to Prisma + SQLite.
+// All tables mirror the PRD ERD. SQLite has no native enums — String + app-level validation is used.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// AUTH (NextAuth) + RBAC
+// ============================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  passwordHash  String
+  role          String    @default("OFFICER") // ADMIN | MANAGER | OFFICER | CREATIVE | TRAINEE | VISITOR
+  unit          String?
+  position      String?
+  avatarUrl     String?
+  active        Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts               Account[]
+  sessions               Session[]
+  tasksAssigned          Task[]               @relation("TaskAssignee")
+  tasksCreated           Task[]               @relation("TaskCreator")
+  meetingsCreated        Meeting[]            @relation("MeetingCreator")
+  meetingParticipants    MeetingParticipant[]
+  meetingActionItems     MeetingActionItem[]  @relation("ActionItemAssignee")
+  keyTasksOwned          KeyTask[]            @relation("KeyTaskOwner")
+  keyTasksCreated        KeyTask[]            @relation("KeyTaskCreator")
+  bulletinsCreated       Bulletin[]           @relation("BulletinCreator")
+  videoProjectsCreated   VideoProject[]       @relation("VideoProjectCreator")
+  videoAssetsUploaded    VideoAsset[]
+  videoApprovals         VideoApproval[]
+  enrollments            Enrollment[]
+  quizAttempts           QuizAttempt[]
+  auditLogs              AuditLog[]
+  aiGenerationLogs       AiGenerationLog[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================================
+// MODULE 2 — DASHBOARD OPERASI
+// ============================================================
+
+// Perancangan Kerja (Kanban)
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  status      String    @default("todo") // todo | in_progress | review | done
+  priority    String    @default("medium") // low | medium | high
+  unit        String?
+  progress    Int       @default(0)
+  dueDate     DateTime?
+  assigneeId  String?
+  createdById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  assignee User? @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  creator  User? @relation("TaskCreator", fields: [createdById], references: [id])
+}
+
+// Mesyuarat
+model Meeting {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  startsAt    DateTime
+  endsAt      DateTime?
+  location    String?
+  meetingUrl  String?
+  agenda      String?
+  minutes     String?
+  aiSummary   String?
+  status      String    @default("scheduled") // scheduled | completed | cancelled
+  createdById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  creator       User?                 @relation("MeetingCreator", fields: [createdById], references: [id])
+  participants  MeetingParticipant[]
+  actionItems   MeetingActionItem[]
+}
+
+model MeetingParticipant {
+  id        String   @id @default(cuid())
+  meetingId String
+  userId    String
+  attending String   @default("yes") // yes | no | maybe
+
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([meetingId, userId])
+}
+
+model MeetingActionItem {
+  id          String    @id @default(cuid())
+  meetingId   String
+  title       String
+  assigneeId  String?
+  dueDate     DateTime?
+  completed   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  assignee  User?   @relation("ActionItemAssignee", fields: [assigneeId], references: [id])
+}
+
+// Kerja-Kerja Utama (Key Tasks / KPI Tracker)
+model KeyTask {
+  id             String    @id @default(cuid())
+  title          String
+  description    String?
+  target         String?
+  kpi            String?
+  achievementPct Int       @default(0)
+  unit           String?
+  status         String    @default("on_track") // on_track | at_risk | delayed | done
+  dueDate        DateTime?
+  ownerId        String?
+  createdById    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  owner   User? @relation("KeyTaskOwner", fields: [ownerId], references: [id])
+  creator User? @relation("KeyTaskCreator", fields: [createdById], references: [id])
+}
+
+// Buletin
+model Bulletin {
+  id          String    @id @default(cuid())
+  title       String
+  body        String
+  category    String    @default("Pengumuman Rasmi") // Pengumuman Rasmi | Acara/Aktiviti | Notis Pentadbiran | Perayaan/Kemerdekaan
+  imageUrl    String?
+  pinned      Boolean   @default(false)
+  archived    Boolean   @default(false)
+  publishedAt DateTime  @default(now())
+  createdById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  creator User? @relation("BulletinCreator", fields: [createdById], references: [id])
+}
+
+// ============================================================
+// MODULE 1 — VIDEO KEMERDEKAAN AI
+// ============================================================
+
+model VideoProject {
+  id            String   @id @default(cuid())
+  title         String
+  theme         String
+  description   String?
+  status        String   @default("draft") // draft | in_review | approved | ready_for_production
+  conceptNotes  String?
+  script        String?
+  scriptLang    String   @default("ms") // ms | en
+  createdById   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  creator   User?           @relation("VideoProjectCreator", fields: [createdById], references: [id])
+  scenes    VideoScene[]
+  assets    VideoAsset[]
+  approvals VideoApproval[]
+}
+
+model VideoScene {
+  id           String   @id @default(cuid())
+  projectId    String
+  sceneOrder   Int
+  title        String
+  description  String
+  visualPrompt String?
+  durationSec  Int      @default(10)
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  project VideoProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model VideoAsset {
+  id         String   @id @default(cuid())
+  projectId  String
+  fileName   String
+  fileUrl    String
+  assetType  String   @default("image") // image | video | audio | document | logo
+  fileSize   Int?
+  uploadedById String?
+  createdAt  DateTime @default(now())
+
+  project    VideoProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  uploadedBy User?        @relation(fields: [uploadedById], references: [id])
+}
+
+model VideoApproval {
+  id         String    @id @default(cuid())
+  projectId  String
+  reviewerId String?
+  status     String    @default("pending") // pending | approved | rejected | changes_requested
+  comment    String?
+  reviewedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  project  VideoProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  reviewer User?        @relation(fields: [reviewerId], references: [id])
+}
+
+// ============================================================
+// MODULE 3 — E-PEMBELAJARAN DRONE FOR BEGINNER
+// ============================================================
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  level       String   @default("beginner")
+  thumbnailUrl String?
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  modules     CourseModule[]
+  enrollments Enrollment[]
+}
+
+model CourseModule {
+  id          String   @id @default(cuid())
+  courseId     String
+  moduleOrder Int
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+  quizzes Quiz[]
+}
+
+model Lesson {
+  id           String   @id @default(cuid())
+  moduleId     String
+  lessonOrder  Int
+  title        String
+  contentType  String   @default("text") // text | video | pdf
+  contentUrl   String?
+  bodyText     String?
+  durationMin  Int      @default(10)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  module CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id            String   @id @default(cuid())
+  moduleId      String
+  question      String
+  optionsJson   String   // JSON-stringified array of strings
+  correctAnswer Int      // index into options array
+  aiGenerated   Boolean  @default(false)
+  explanation   String?
+  createdAt     DateTime @default(now())
+
+  module   CourseModule  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  attempts QuizAttempt[]
+}
+
+model Enrollment {
+  id             String   @id @default(cuid())
+  courseId       String
+  userId         String
+  progressPct    Int      @default(0)
+  status         String   @default("in_progress") // not_started | in_progress | completed
+  score          Int?
+  enrolledAt     DateTime @default(now())
+  completedAt    DateTime?
+  updatedAt      DateTime @updatedAt
+
+  course       Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attempts     QuizAttempt[]
+  certificates Certificate[]
+
+  @@unique([courseId, userId])
+}
+
+model QuizAttempt {
+  id             String   @id @default(cuid())
+  quizId         String
+  userId         String
+  enrollmentId   String?
+  selectedAnswer Int
+  isCorrect      Boolean
+  attemptedAt    DateTime @default(now())
+
+  quiz       Quiz        @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollment Enrollment? @relation(fields: [enrollmentId], references: [id])
+}
+
+model Certificate {
+  id            String   @id @default(cuid())
+  enrollmentId  String
+  certificateNo String   @unique
+  issuedAt      DateTime @default(now())
+  score         Int
+  certificateUrl String?
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+}
+
+// ============================================================
+// SECURITY — AUDIT LOG & AI GENERATION LOG (per PRD §10.2, §12)
+// ============================================================
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String   // e.g. "task.update", "bulletin.create", "video.approve"
+  entityType String?
+  entityId   String?
+  metadata   String?  // JSON string
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model AiGenerationLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  module      String   // video_concept | video_script | video_visual | meeting_summary | bulletin_polish | quiz_generate
+  prompt      String
+  response    String?
+  tokensUsed  Int?
+  model       String   @default("glm-5.2")
+  success     Boolean  @default(true)
+  errorMessage String?
+  createdAt   DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
