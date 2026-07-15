@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -52,3 +53,29 @@ prompt
 server.log
 # Skills directory
 /skills/
+# SIRI-AI JTM deployment-specific
+# Local SQLite database (we use Supabase in production — per PRD §9)
+/db/*.db
+/db/*.db-journal
+# Download folder (screenshots, exports — runtime artifacts)
+/download/
+# Agent context (internal)
+/agent-ctx/
+# PRD extracted text (working file)
+prd_extracted.txt
+# OS / editor
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+
+# Tool results / upload artifacts (sandbox-only)
+/tool-results/
+/upload/
+# Examples and mini-services (unused in SIRI-AI — keep scaffold, don't deploy)
+/examples/
+/mini-services/
+# Caddyfile is sandbox-only (Netlify handles routing in production)
+Caddyfile
+# Worklog is internal development notes
+worklog.md
