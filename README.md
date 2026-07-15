@@ -16,7 +16,7 @@ Built per **Product Requirements Document v1.0** (14 Julai 2026) for Jabatan Ten
 - [Demo Accounts](#demo-accounts)
 - [Local Development](#local-development)
 - [Database Setup (Supabase)](#database-setup-supabase)
-- [Deployment (Netlify)](#deployment-netlify)
+- [Deployment (Vercel)](#deployment-vercel)
 - [Security](#security)
 - [Project Structure](#project-structure)
 - [License](#license)
@@ -70,7 +70,7 @@ SIRI-AI is a unified digital platform that addresses three operational needs of 
 | **Auth** | NextAuth.js v4 (JWT, 8h sessions, role-based access control) |
 | **AI** | Z.AI GLM-5.2 (via `z-ai-web-dev-sdk`, server-side only) |
 | **State** | TanStack Query (server), Zustand (client) |
-| **Deployment** | Netlify (with `@netlify/plugin-nextjs`) |
+| **Deployment** | Vercel (native Next.js support) |
 | **Icons** | lucide-react |
 | **Fonts** | Poppins (display), Inter (body) |
 
@@ -164,9 +164,9 @@ Per PRD §9.2 & §12, enable RLS in your Supabase dashboard for defense-in-depth
 
 ---
 
-## Deployment (Netlify)
+## Deployment (Vercel)
 
-This project is configured for Netlify deployment per PRD §13.
+This project is configured for Vercel deployment — the natural platform for Next.js apps.
 
 ### Step 1: Push to GitHub
 ```bash
@@ -174,38 +174,55 @@ git remote add origin https://github.com/khairulanuar-collab/Sistem-Integrasi-Re
 git push -u origin main
 ```
 
-### Step 2: Connect to Netlify
-1. Go to [app.netlify.com](https://app.netlify.com) → **Add new site → Import an existing project**
-2. Connect your GitHub account and select this repository
-3. Netlify auto-detects Next.js — settings come from `netlify.toml`:
-   - **Build command**: `bun run build` (or `npm run build`)
-   - **Publish directory**: `.next`
-   - **Plugin**: `@netlify/plugin-nextjs` (auto-installed)
+### Step 2: Import to Vercel
+1. Go to [vercel.com/new](https://vercel.com/new)
+2. Connect your GitHub account and select this repository: `Sistem-Integrasi-Rekabentuk-Inovasi`
+3. Vercel auto-detects Next.js — settings come from `vercel.json`:
+   - **Framework Preset**: Next.js (auto-detected)
+   - **Build Command**: `bun run build` (or `npm run build`)
+   - **Output Directory**: (auto-detected by Next.js preset)
+   - **Install Command**: `bun install` (or `npm install`)
 
 ### Step 3: Configure Environment Variables
-In Netlify site settings → **Environment variables**, add:
+In Vercel project settings → **Environment Variables**, add all 7 variables below. **Important**: Set them for all environments (Production, Preview, Development).
 
 | Variable | Value |
 |---|---|
 | `DATABASE_URL` | Your Supabase pooler connection string (same as `.env`) |
-| `NEXTAUTH_URL` | `https://your-site-name.netlify.app` (your Netlify URL) |
+| `NEXTAUTH_URL` | `https://your-project.vercel.app` (replace with your Vercel URL after first deploy) |
 | `NEXTAUTH_SECRET` | Generate with `openssl rand -base64 32` |
-| `ZAI_API_KEY` | Your Z.AI API key |
+| `ZAI_API_KEY` | Your Z.AI API key (get one at [z.ai](https://z.ai)) |
 | `SUPABASE_URL` | `https://[project-ref].supabase.co` |
 | `SUPABASE_ANON_KEY` | Your Supabase publishable/anon key |
-| `SUPABASE_PROJECT_REF` | Your project ref |
+| `SUPABASE_PROJECT_REF` | Your Supabase project ref |
 
-> ⚠️ **Never commit `.env` to Git.** All secrets must be set in Netlify's environment variables UI.
+> ⚠️ **Never commit `.env` to Git.** All secrets must be set in Vercel's environment variables UI.
 
 ### Step 4: Deploy
-- Push to `main` → triggers production deploy
-- Push to `staging` → triggers staging deploy (per PRD §13.1)
-- Pull requests → auto-generated Deploy Previews
+Click **"Deploy"**. Vercel will:
+1. Run `bun install` (or `npm install`) — auto-runs `postinstall: prisma generate`
+2. Run `bun run build` (builds Next.js with native Vercel optimization)
+3. Deploy to global edge network with HTTPS (auto-renewed SSL)
+
+Build time: ~2-4 minutes. You'll get a live URL like `https://siri-ai-jtm.vercel.app`.
+
+### Step 5: Update NEXTAUTH_URL
+After the first deploy:
+1. Copy your Vercel URL (e.g. `https://siri-ai-jtm-abc123.vercel.app`)
+2. Update the `NEXTAUTH_URL` environment variable in Vercel to match
+3. Trigger a redeploy (Deployments → ⋮ → Redeploy)
+
+### Branch-based Environments (per PRD §13.1)
+Vercel automatically creates preview deployments for every branch and PR:
+- `main` → Production deployment
+- `staging` → Preview deployment (for UAT per PRD §13.1)
+- Pull requests → ephemeral preview deployments
 
 ### Custom Domain (per PRD §13.2)
-1. In Netlify: **Domain settings → Add custom domain**
-2. Add your `jtm.gov.my` subdomain (e.g. `siri-ai.jtm.gov.my`)
-3. SSL certificate is auto-issued by Let's Encrypt
+1. Vercel → Project → **Settings → Domains**
+2. Add your custom domain (e.g. `siri-ai.jtm.gov.my`)
+3. Update your DNS provider with the CNAME or A record Vercel provides
+4. SSL certificate is auto-issued and renewed by Vercel
 
 ---
 
@@ -219,8 +236,8 @@ Per PRD §12, this system implements multiple layers of security:
 - **Audit Logging**: Every write/delete/approve action recorded in `AuditLog` table (login, task.create, video.approve, ai.generate, certificate.issue, etc.)
 - **AI Rate Limiting**: 10 GLM calls/minute/user (token-bucket, returns HTTP 429 when exceeded)
 - **Secrets Management**: API keys (Z.AI, NextAuth secret, Supabase service role) stored as environment variables — never exposed to client-side code
-- **HTTPS/TLS**: Enforced by Netlify (HSTS header set in `netlify.toml`)
-- **Security Headers**: `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security` (configured in `netlify.toml`)
+- **HTTPS/TLS**: Enforced by Vercel (HSTS header set in `vercel.json`)
+- **Security Headers**: `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security` (configured in `vercel.json`)
 - **PDPA Compliance**: Per Akta Perlindungan Data Peribadi Malaysia — only necessary user data is collected, audit trail maintained for accountability
 
 ---
@@ -254,7 +271,7 @@ Sistem-Integrasi-Rekabentuk-Inovasi/
 │   └── hooks/                 # use-toast, use-mobile
 ├── public/                    # Static assets
 ├── .env.example               # Environment variables template
-├── netlify.toml               # Netlify deployment config (per PRD §13.3)
+├── vercel.json                # Vercel deployment config (security headers, build)
 ├── next.config.ts             # Next.js config
 ├── package.json               # Scripts + dependencies
 └── README.md                  # This file
@@ -276,4 +293,4 @@ For technical inquiries, contact the **Unit ICT JTM** development team.
 
 **Document Version**: 1.0 | **Status**: Draf untuk Semakan | **Date**: 14 Julai 2026
 
-Tech Stack: Z.AI (GLM-5.2) · Supabase · Netlify · Glassmorphism UI/UX
+Tech Stack: Z.AI (GLM-5.2) · Supabase · Vercel · Glassmorphism UI/UX
