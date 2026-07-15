@@ -1,14 +1,15 @@
 // SIRI-AI JTM — Prisma schema
-// Adapted from PRD §9 (Supabase schema) to Prisma + SQLite.
-// All tables mirror the PRD ERD. SQLite has no native enums — String + app-level validation is used.
+// Backend: Supabase (PostgreSQL). Tables mirror the PRD §9 ERD.
+// RLS-equivalent access control is enforced at the API layer via requirePermission().
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
 }
 
 // ============================================================
